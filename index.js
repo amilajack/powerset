@@ -1,13 +1,12 @@
 function power(array, options = {}) {
   let sort = options.sort || false;
-  const limit = options.limit;
-  const includeEmpty = options.empty;
-  let filter = options.filter;
+  const { limit } = options;
+  let { filter } = options;
   let sourceArray = array;
 
   if (options.key) {
     sourceArray = [];
-    for (var i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i += 1) {
       if (power.checkKey(array[i], options)) {
         sourceArray.push(array[i][options.key]);
       }
@@ -41,19 +40,19 @@ function power(array, options = {}) {
   limitInternal = limitInternal.sort((a, b) => a - b);
 
   if (sort === 'desc') {
-    for (var i = limitInternal[1], j; i >= limitInternal[0]; i--) {
-      for (j = 0; j < all.length; j++) {
+    for (let i = limitInternal[1], j; i >= limitInternal[0]; i -= 1) {
+      for (j = 0; j < all.length; j += 1) {
         if (all[j].length === i) arranged.push(all[j]);
       }
     }
   } else if (sort === 'asc') {
-    for (var i = limitInternal[0], j; i <= limitInternal[1]; i++) {
-      for (j = 0; j < all.length; j++) {
+    for (let i = limitInternal[0], j; i <= limitInternal[1]; i += 1) {
+      for (j = 0; j < all.length; j += 1) {
         if (all[j].length === i) arranged.push(all[j]);
       }
     }
   } else if (!sort) {
-    for (var i = 0; i < all.length; i++) {
+    for (let i = 0; i < all.length; i += 1) {
       if (
         all[i].length >= limitInternal[0] &&
         all[i].length <= limitInternal[1]
@@ -67,7 +66,9 @@ function power(array, options = {}) {
     let policy = 'any';
     if (typeof filter === 'object') {
       if (!Array.isArray(filter)) {
-        for (const x in filter) policy = x;
+        Object.keys(filter).forEach(key => {
+          policy = key;
+        });
         filter = filter[policy];
       }
     }
@@ -76,11 +77,12 @@ function power(array, options = {}) {
 
     const filtered = [];
 
-    for (let i = 0, f; i < arranged.length; i++) {
+    for (let i = 0, f; i < arranged.length; i += 1) {
       f = arranged[i].filter(a => {
         if (options.filterKey) {
           if (!power.checkKey(a, options.filterKey, options.keySafe))
             return false;
+          // eslint-disable-next-line
           a = a[options.filterKey];
         }
         return filter.includes(a);
@@ -100,14 +102,12 @@ function power(array, options = {}) {
   return arranged;
 }
 
-power.checkKey = function(element, key, keySafe) {
-  return (
-    typeof element === 'object' &&
-    (keySafe !== true || element.hasOwnProperty(key))
-  );
-};
+power.checkKey = (element, key, keySafe) =>
+  typeof element === 'object' &&
+  // eslint-disable-next-line
+  (keySafe !== true || element.hasOwnProperty(key));
 
-power.rec = function(active, rest, results) {
+power.rec = (active, rest, results) => {
   if (rest.length > 0) {
     power.rec(active.concat(rest[0]), rest.slice(1), results);
     power.rec(active, rest.slice(1), results);
