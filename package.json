@@ -15,6 +15,9 @@
     "jest": "^24.9.0"
   },
   "eslintConfig": {
-    "extends": "bliss"
+    "extends": "bliss",
+    "rules": {
+      "flowtype-errors/show-errors": "off"
+    }
   }
 }
