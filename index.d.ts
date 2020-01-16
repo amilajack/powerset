@@ -1,3 +1,3 @@
-declare function powerset(items: any[]): any[];
+declare function powerset(items: any[]): any[][];
 
 export = powerset;
